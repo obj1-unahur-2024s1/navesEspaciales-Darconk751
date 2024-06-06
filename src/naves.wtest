@@ -1,0 +1,110 @@
+import naves.*
+
+describe "test de naves"{
+	const naveBaliza = new NaveBaliza(cantidadDeCombustible = 50000, colorBaliza = "azul", direccion = 5, velocidad = 10000)
+	const naveDePasajeros = new NavePasajero(cantidadDeCombustible = 25000, direccion = -2, velocidad = 7000, cantidadDePasajeros = 500)
+	const naveDeCombate = new NaveDeCombate(cantidadDeCombustible = 37000, direccion = 1, velocidad = 15000)
+	const naveDeHospital = new NaveHospital(cantidadDeCombustible = 70000, direccion = 0, velocidad = 5000, cantidadDePasajeros = 250)
+	const naveDeCombateSigiloso = new NaveDeCombateSigiloso(cantidadDeCombustible = 45000, direccion = -4, velocidad = 50000)
+	
+	test "Todas las naves se acercan 1 paso al sol"{
+		naveBaliza.acercarseUnPocoAlSol()
+		naveDePasajeros.acercarseUnPocoAlSol()
+		naveDeCombate.acercarseUnPocoAlSol()
+		naveDeHospital.acercarseUnPocoAlSol()
+		naveDeCombateSigiloso.acercarseUnPocoAlSol()
+		
+		assert.equals(6, naveBaliza.direccion())
+		assert.equals(-1, naveDePasajeros.direccion())
+		assert.equals(2, naveDeCombate.direccion())
+		assert.equals(1, naveDeHospital.direccion())
+		assert.equals(-3, naveDeCombateSigiloso.direccion())
+	}
+	
+	test "aceleran todas las naves"{
+		naveBaliza.acelerar(10000)
+		naveDePasajeros.acelerar(10000)
+		naveDeCombate.acelerar(10000)
+		naveDeHospital.acelerar(10000)
+		naveDeCombateSigiloso.acelerar(10000)
+		
+		assert.equals(20000, naveBaliza.velocidad())
+		assert.equals(17000, naveDePasajeros.velocidad())
+		assert.equals(25000, naveDeCombate.velocidad())
+		assert.equals(15000, naveDeHospital.velocidad())
+		assert.equals(60000, naveDeCombateSigiloso.velocidad())
+	}
+	
+	test "desaceleran todas las naves"{
+		naveBaliza.desacelerar(10000)
+		naveDePasajeros.desacelerar(10000)
+		naveDeCombate.desacelerar(10000)
+		naveDeHospital.desacelerar(10000)
+		naveDeCombateSigiloso.desacelerar(10000)
+		
+		assert.equals(0, naveBaliza.velocidad())
+		assert.equals(0, naveDePasajeros.velocidad())
+		assert.equals(5000, naveDeCombate.velocidad())
+		assert.equals(0, naveDeHospital.velocidad())
+		assert.equals(40000, naveDeCombateSigiloso.velocidad())
+	}
+	
+	test"La nave baliza va hacia el sol"{
+		naveBaliza.irHaciaElSol()
+		assert.equals(10, naveBaliza.direccion())
+	}
+	
+	test"La nave de pasajeros escapa del sol"{
+		naveDePasajeros.escaparDelSol()
+		assert.equals(-10, naveDePasajeros.direccion())
+	}
+	
+	test"La nave de combate se pone en paralelo del sol"{
+		naveDeCombate.ponerseParaleloAlSol()
+		assert.equals(0, naveDeCombate.direccion())
+	}
+	
+	test"las naves que estan tranquilas son la naveBaliza, pasajeros y naveDeHospital, y las otras 2 no"{
+		assert.that(naveBaliza.estaTranquila())
+		assert.that(naveDePasajeros.estaTranquila())
+		assert.notThat(naveDeCombate.estaTranquila())
+		assert.that(naveDeHospital.estaTranquila())
+		assert.notThat(naveDeCombateSigiloso.estaTranquila())
+	}
+	
+	test"las naves que estan de relajo son la naveBaliza, pasajeros y la de combate no"{
+		assert.that(naveBaliza.estaDeRelajo())
+		assert.that(naveDePasajeros.estaDeRelajo())
+		assert.notThat(naveDeCombate.estaDeRelajo())
+	}
+	
+	test"Todas las naves que preparan el viaje y producen diferentes resultados entre si"{
+		naveBaliza.prepararViaje()
+		naveDePasajeros.prepararViaje()
+		naveDeCombate.prepararViaje()
+		
+		assert.equals(80000, naveBaliza.cantidadDeCombustible())
+		assert.equals(15000, naveBaliza.velocidad())
+		assert.equals(0, naveBaliza.direccion())
+		assert.equals("verde", naveBaliza.colorBaliza())
+		
+		assert.equals(55000, naveDePasajeros.cantidadDeCombustible())
+		assert.equals(12000, naveDePasajeros.velocidad())
+		assert.equals(2000, naveDePasajeros.cantidadDeRacionesDeComida())
+		assert.equals(3000, naveDePasajeros.cantidadDeBebidas())
+		assert.equals(-1, naveDePasajeros.direccion())
+		
+		assert.equals(67000, naveDeCombate.cantidadDeCombustible())
+		assert.equals(35000, naveDeCombate.velocidad())
+		assert.equals(false, naveDeCombate.misilesDesplegados())
+		assert.that(naveDeCombate.emitioMensaje("Saliendo en misión"))
+	}
+	test "Mensajes emitidos de la nava de combate con diferentes resultados"{
+		naveDeCombate.emitirMensaje("¿Cómo estas?")
+		naveDeCombate.emitirMensaje("Buenas tardes")
+		naveDeCombate.emitirMensaje("Nueva misión")
+		
+		assert.equals("¿Cómo estas?", naveDeCombate.primerMensajeEmitido())
+		assert.equals("Nueva misión", naveDeCombate.ultimoMensajeEmitido())
+	}
+}
